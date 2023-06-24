@@ -1,0 +1,45 @@
+version: "3"
+
+services:
+  apache:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8081:80/tcp
+    volumes:
+      - ./app:/var/www/html/app
+      - ./apache-config.conf:/etc/apache2/conf-enabled/apache-config.conf:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+      - /etc/shadow:/etc/shadow:ro
+      - /etc/sudoers.d:/etc/sudoers.d:ro
+      - /home:/home
+      - /tmp:/tmp
+      - /run/user/$UID:/run/user/$UID
+      - /var/tmp:/var/tmp
+      - /var/lib/php/sessions:/var/lib/php/sessions
+    user: $UID
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: pass
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - 3307:3306/tcp
+    environment:
+      - MYSQL_ROOT_PASSWORD=pass
+      - MYSQL_DATABASE=project_data_pase
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8888:80
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: pass
