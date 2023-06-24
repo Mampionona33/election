@@ -1,5 +1,23 @@
 # README - Projet avec Docker
 
+suje de l'exercice
+Les élections législatives, en Guignolerie Septentrionale,
+obéissent à la règle suivante:
+lorsque l'un des candidats obtient plus de 50% des
+suffrages, il est élu dès le premier tour.
+en ca de deuxième tour, peuvent participer
+uniquement les candidats ayant obtenu au moins
+12,5% des voix au premier tour.
+Travail à Faire:
+Vous devez écrire un algorithme qui permette la saisie
+des scores de quatre candidats au premier tour. Cet
+algorithme traitera ensuite le candidat numéro 1
+(et uniquement lui) : il dira s'il est élu, battu, s'il se
+trove en ballottage favorable (il participe au second
+tour en étant arrivé en tête à l'issue du premier tour)
+ou défavorable (il participe au second tour sans avoir
+été en tête au premier tour).
+
 Ce projet est un template de base pour un projet utilisant Docker. Il vous permet de démarrer rapidement un environnement de développement avec les fonctionnalités suivantes :
 
 1. Cloner le projet :
