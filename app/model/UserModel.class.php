@@ -31,6 +31,12 @@ class UserModel
                 'name' => 'password',
                 'type' => 'VARCHAR(50)',
                 'required' => false,
+            ],
+            [
+                'name' => 'role',
+                'type' => 'ENUM',
+                'values' => ['Mr', 'Mme', 'Mlle'],
+                'required' => false,
             ]
         ];
         $this->dataManipulator = new DataManipulator();
