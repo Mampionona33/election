@@ -13,8 +13,17 @@ class UserController
         $this->userModel = new UserModel();
     }
 
-    public function isUserLogged(): bool
+    private function isUserLogged(): bool
     {
         return false;
+    }
+
+    public function handleHome()
+    {
+        if ($this->isUserLogged()) {
+            echo "Bienvenue, utilisateur connecté !";
+        } else {
+            echo "Veuillez vous connecter.";
+        }
     }
 }

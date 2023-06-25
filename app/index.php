@@ -16,23 +16,20 @@ final class App
         $autoload = new lib\Autoload();
         spl_autoload_register([$autoload, 'loadClass']);
         $this->router = new router\Router();
+        $this->userController = new controller\UserController();
     }
 
     public function __invoke()
     {
         session_start();
 
-        $this->router->get("/", function () {
-
-            $this->userController = new controller\UserController();
-
-            // Vérifier si l'utilisateur est connecté
-            if ($this->userController->isUserLogged()) {
-                echo "Bienvenue, utilisateur connecté !";
-            } else {
-                echo "Veuillez vous connecter.";
-            }
-        });
+        /**
+         * equivalent a :
+         * $this->router->get("/", function () {
+         *      $this->userController->handleHome();
+         * });
+         */
+        $this->router->get("/", [$this->userController, "handleHome"]);
 
         $this->router->handleRequest();
     }
