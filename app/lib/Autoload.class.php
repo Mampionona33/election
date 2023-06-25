@@ -13,7 +13,6 @@ class Autoload
     public function loadClass($className)
     {
         $file = dirname(__DIR__) . '/' . str_replace('\\', '/', $className) . '.class.php';
-
         if (file_exists($file)) {
             require_once $file;
         } else {

@@ -6,13 +6,26 @@ ini_set('display_errors', '1');
 
 require_once './lib/Autoload.class.php';
 
-$autoload = new lib\Autoload();
-spl_autoload_register([$autoload, 'loadClass']);
+final class App
+{
+    private $router;
 
-$router = new router\Router();
+    function __construct()
+    {
+        $autoload = new lib\Autoload();
+        spl_autoload_register([$autoload, 'loadClass']);
+        $this->router = new router\Router();
+    }
 
-$router->get('/', function () {
-    echo "test";
-});
+    public function __invoke()
+    {
+        $this->router->get("/", function () {
+            echo "test";
+        });
 
-$router();
+        $this->router->handleRequest();
+    }
+}
+
+$app = new App();
+$app();

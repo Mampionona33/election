@@ -17,7 +17,7 @@ class Router
         $this->routes["GET"][$path] = $callback;
     }
 
-    public function __invoke()
+    public function handleRequest()
     {
         $method = $_SERVER['REQUEST_METHOD'];
 
