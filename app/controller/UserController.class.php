@@ -1,6 +1,6 @@
 <?php
 
-namespace lib;
+namespace controller;
 
 use model\UserModel;
 
@@ -13,5 +13,8 @@ class UserController
         $this->userModel = new UserModel();
     }
 
-    
+    public function isUserLogged(): bool
+    {
+        return false;
+    }
 }

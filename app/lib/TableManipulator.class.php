@@ -2,16 +2,18 @@
 
 namespace lib;
 
-use DataBase;
+use controller\DataBase;
+use PDOException;
 
 class TableManipulator
 {
     private $db;
+    private $dataBase;
 
     public function __construct()
     {
-        $dataBase = new DataBase();
-        $this->db = $dataBase->connect();
+        $this->dataBase = new DataBase();
+        $this->db = $this->dataBase->connect();
     }
 
     public function createTable($tableName, $columns)
@@ -24,7 +26,7 @@ class TableManipulator
                 $columnName = $column['name'];
                 $columnType = $column['type'];
                 $isRequired = $column['required'] ? 'NOT NULL' : '';
-                $isAutoIncrement = $column['auto_increment'] ? 'AUTO_INCREMENT' : '';
+                $isAutoIncrement = isset($column['auto_increment']) && $column['auto_increment'] ? 'AUTO_INCREMENT' : '';
 
                 if ($columnType === 'ENUM') {
                     $enumValues = "'" . implode("', '", $column['values']) . "'";
@@ -34,7 +36,7 @@ class TableManipulator
                     $columnsQuery[] = "$columnName $columnType $isRequired $isAutoIncrement";
                 }
 
-                if ($column['auto_increment']) {
+                if (isset($column['auto_increment'])) {
                     $primaryKeys[] = $columnName;
                 }
             }

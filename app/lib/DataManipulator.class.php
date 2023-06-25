@@ -2,14 +2,19 @@
 
 namespace lib;
 
+use controller\DataBase;
+use PDO;
+use PDOException;
+
 class DataManipulator
 {
     private $db;
+    private $dataBase;
 
     public function __construct()
     {
-        $dataBase = new DataBase();
-        $this->db = $dataBase->connect();
+        $this->dataBase = new DataBase();
+        $this->db = $this->dataBase->connect();
     }
 
     public function createData($tableName, $data)

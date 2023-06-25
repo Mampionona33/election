@@ -9,6 +9,7 @@ require_once './lib/Autoload.class.php';
 final class App
 {
     private $router;
+    private $userController;
 
     function __construct()
     {
@@ -19,8 +20,18 @@ final class App
 
     public function __invoke()
     {
+        session_start();
+
         $this->router->get("/", function () {
-            echo "test";
+
+            $this->userController = new controller\UserController();
+
+            // Vérifier si l'utilisateur est connecté
+            if ($this->userController->isUserLogged()) {
+                echo "Bienvenue, utilisateur connecté !";
+            } else {
+                echo "Veuillez vous connecter.";
+            }
         });
 
         $this->router->handleRequest();

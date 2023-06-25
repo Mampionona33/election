@@ -1,4 +1,10 @@
 <?php
+
+namespace controller;
+
+use PDO;
+use PDOException;
+
 class DataBase
 {
     private  $user =  "root";

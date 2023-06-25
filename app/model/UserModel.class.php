@@ -42,4 +42,9 @@ class UserModel
     {
         return false;
     }
+
+    public function getUsers(): array
+    {
+        return [];
+    }
 }
