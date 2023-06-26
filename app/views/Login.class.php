@@ -28,7 +28,7 @@ class Login
                     <div class="form-group row">
                         <label for="password" class="col-sm-3 col-form-label">Password</label>
                         <div class="col-sm-9">
-                            <input type="password" class="form-control form-control-sm" name="password" id="password" autocomplete="current-password" required>
+                            <input type="password" class="form-control form-control-sm" name="password" id="password" autocomplete="current-password" >
                         </div>
                     </div>
                     <div class="d-flex justify-content-start align-items-center gap-3 btn btn-primary">

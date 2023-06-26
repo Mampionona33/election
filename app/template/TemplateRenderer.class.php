@@ -13,6 +13,8 @@ class TemplateRenderer
     private $bodyContent;
     private $sideBarContent;
     private $title;
+    private $toast;
+
 
     public function render($title = "Document", $bodyContent = null, $sidebarContent = null): string
     {
@@ -35,6 +37,7 @@ class TemplateRenderer
         <body class="custom-bc">
             <?php echo $this->renderNavbar() ?>
             <?php echo $this->renderMessage(); ?>
+            <?php echo $this->renderToast(); ?>
             <?php echo $this->errorMessage ? $this->renderErrorMessage() : null; ?>
             <div class="container-fluid">
                 <?php echo $this->sideBarContent ? $this->renderSideBar() : null; ?>
@@ -142,7 +145,6 @@ class TemplateRenderer
         return null;
     }
 
-
     private function renderErrorMessage()
     {
         if ($this->errorMessage) {
@@ -159,6 +161,46 @@ class TemplateRenderer
             </div>
             ';
         }
+        return null;
+    }
+
+    public function setToast($type, $message): void
+    {
+        $this->toast = [
+            'type' => $type,
+            'message' => $message
+        ];
+    }
+
+
+    private function renderToast(): mixed
+    {
+        if ($this->toast) {
+            $type = $this->toast['type'];
+            $message = $this->toast['message'];
+
+            $toastClass = '';
+            if ($type === 'error') {
+                $toastClass = 'bg-danger text-white';
+            } elseif ($type === 'information') {
+                $toastClass = 'bg-info text-white';
+            } elseif ($type === 'success') {
+                $toastClass = 'bg-success text-white';
+            }
+
+            return <<<HTML
+        <div class="toast $toastClass" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">$type</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                $message
+            </div>
+        </div>
+        HTML;
+        }
+
         return null;
     }
 }

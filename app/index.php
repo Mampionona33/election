@@ -30,6 +30,9 @@ final class App
          * });
          */
         $this->router->get("/", [$this->userController, "handleHome"]);
+        $this->router->get("/login", [$this->userController, "loginPage"]);
+        $this->router->post("/login", [$this->userController, 'handleLogin']);
+        $this->router->get("/logout", [$this->userController, "logout"]);
 
         $this->router->handleRequest();
     }
