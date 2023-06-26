@@ -36,6 +36,11 @@ class UserController
         if ($this->isUserLogged()) {
             // Page contenant la résultat du premier candidat
             $this->navBar->setMenuVisible(true);
+            $sidebarElements = [
+                ['path' => '/', 'label' => 'Accueil'],
+                ['path' => '/entry', 'label' => 'Saisie'],
+            ];
+            $this->templateRenderer->setSidebarContent($sidebarElements);
             $this->templateRenderer->setNavbarContent($this->navBar->render());
             $this->templateRenderer->setBodyContent($this->electionResult());
             echo $this->templateRenderer->render("Home");

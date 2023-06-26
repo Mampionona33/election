@@ -63,7 +63,7 @@ class TemplateRenderer
         return '';
     }
 
-    public function setSidebarContent($sideBarContent): void
+    public function setSidebarContent(array $sideBarContent): void
     {
         $this->sideBarContent = $sideBarContent;
     }
@@ -71,6 +71,19 @@ class TemplateRenderer
     public function renderSideBar(): mixed
     {
         if ($this->sideBarContent) {
+            $sidebarItems = '';
+
+            foreach ($this->sideBarContent as $key => $item) {
+                $path = $item['path'];
+                $label = $item['label'];
+                $sidebarItems .= '<a class="text-decoration-none text-dark p-2" href="' . $path . '">' . $label . '</a>';
+
+                // Vérifier si nous ne sommes pas sur le dernier élément du tableau
+                if ($key !== array_key_last($this->sideBarContent)) {
+                    $sidebarItems .= '<hr class="sidebar-divider m-0">';
+                }
+            }
+
             return '
             <div class="offcanvas offcanvas-start" data-bs-backdrop="static" tabindex="-1" id="staticBackdrop" aria-labelledby="staticBackdropLabel">
                 <div class="offcanvas-header">
@@ -81,9 +94,7 @@ class TemplateRenderer
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body p-0">
-                    <div>'
-                . $this->sideBarContent .
-                '</div>
+                    <div class="d-flex flex-column " >' . $sidebarItems . '</div>
                 </div>
             </div>
             ';
@@ -171,7 +182,6 @@ class TemplateRenderer
             'message' => $message
         ];
     }
-
 
     private function renderToast(): mixed
     {
