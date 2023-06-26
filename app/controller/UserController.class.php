@@ -27,8 +27,7 @@ class UserController
         if ($this->isUserLogged()) {
             echo "Bienvenue, utilisateur connecté !";
         } else {
-            $loginPage = new Login();
-            echo $loginPage();
+            // Page contenant la résultat du premier candidat
         }
     }
 }
