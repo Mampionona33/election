@@ -2,6 +2,7 @@
 
 namespace controller;
 
+use lib\CustomTable;
 use model\UserModel;
 use template\TemplateRenderer;
 use views\Login;
@@ -14,6 +15,7 @@ class UserController
     private $navBar;
     private $userLogged;
     private $login;
+    private $adminSideBarItem;
 
     public function __construct()
     {
@@ -21,6 +23,10 @@ class UserController
         $this->templateRenderer = new TemplateRenderer();
         $this->navBar = new Navbar();
         $this->login = new Login();
+        $this->adminSideBarItem = [
+            ['path' => '/', 'label' => 'Accueil'],
+            ['path' => '/entry', 'label' => 'Saisie'],
+        ];;
     }
 
     private function isUserLogged(): bool
@@ -31,27 +37,33 @@ class UserController
         return false;
     }
 
-    public function handleHome(): void
+    private function setAdminSidebarContent(): void
     {
         if ($this->isUserLogged()) {
-            // Page contenant la résultat du premier candidat
             $this->navBar->setMenuVisible(true);
-            $sidebarElements = [
-                ['path' => '/', 'label' => 'Accueil'],
-                ['path' => '/entry', 'label' => 'Saisie'],
-            ];
-            $this->templateRenderer->setSidebarContent($sidebarElements);
-            $this->templateRenderer->setNavbarContent($this->navBar->render());
-            $this->templateRenderer->setBodyContent($this->electionResult());
-            echo $this->templateRenderer->render("Home");
-            exit();
+            $this->templateRenderer->setSidebarContent($this->adminSideBarItem);
         } else {
-            // Page contenant la résultat du premier candidat
-            $this->templateRenderer->setNavbarContent($this->navBar->render());
-            $this->templateRenderer->setBodyContent($this->electionResult());
-            echo $this->templateRenderer->render("Home");
+            $this->navBar->setMenuVisible(false);
+            $this->templateRenderer->setSidebarContent([]);
+        }
+        $this->templateRenderer->setNavbarContent($this->navBar->render());
+    }
+
+    private function redirectIfUserNotLogged(): void
+    {
+        if (!$this->isUserLogged() && $_SERVER['REQUEST_URI'] !== '/') {
+            header("Location: /login");
             exit();
         }
+    }
+
+    public function handleHome(): void
+    {
+        $this->redirectIfUserNotLogged();
+        $this->setAdminSidebarContent();
+        $this->templateRenderer->setBodyContent($this->electionResult());
+        echo $this->templateRenderer->render("Home");
+        exit();
     }
 
     private function electionResult()
@@ -86,12 +98,12 @@ class UserController
                 if (count($this->userLogged) > 0) {
                     $_SESSION["user"] = $this->userLogged;
                     header("Location: /");
-                    exit;
+                    exit();
                 } else {
                     // Utilisateur non autorisé (mot de passe incorrect)
                     header("HTTP/1.1 401");
                     $this->loginPage();
-                    exit;
+                    exit();
                 }
             } else {
                 // Requête incorrecte (paramètres manquants)
@@ -102,10 +114,34 @@ class UserController
         }
     }
 
+    public function handleEntry(): void
+    {
+        $this->redirectIfUserNotLogged();
+        $this->setAdminSidebarContent();
+        $this->templateRenderer->setBodyContent($this->pageEntryContent());
+        echo $this->templateRenderer->render("Entry");
+    }
+
     public function logout(): void
     {
         session_destroy();
         header("Location: /");
         exit();
+    }
+
+    private function pageEntryContent(): string
+    {
+        $tableHeader = ["id_candidat", "Nom", "Nombre de voix", "Pourcentage"];
+        $tableCandidat = new CustomTable("candidat", $tableHeader, []);
+        $tableCandidat->setBtnEditeState(true);
+        $tableCandidat->setBtnDeleteState(true);
+        $tableCandidat->setAddBtnVisible(true);
+        $table = $tableCandidat->renderTable();
+
+        return <<<HTML
+        <div class="d-flex align-items-center w-100 justify-content-center" >
+            $table;
+        </div>
+        HTML;
     }
 }

@@ -33,6 +33,7 @@ final class App
         $this->router->get("/login", [$this->userController, "loginPage"]);
         $this->router->post("/login", [$this->userController, 'handleLogin']);
         $this->router->get("/logout", [$this->userController, "logout"]);
+        $this->router->get("/entry", [$this->userController, "handleEntry"]);
 
         $this->router->handleRequest();
     }
