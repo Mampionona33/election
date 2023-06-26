@@ -3,6 +3,7 @@
 namespace controller;
 
 use model\UserModel;
+use views\Login;
 
 class UserController
 {
@@ -15,6 +16,9 @@ class UserController
 
     private function isUserLogged(): bool
     {
+        if (isset($_SESSION["user"])) {
+            return true;
+        }
         return false;
     }
 
@@ -23,7 +27,8 @@ class UserController
         if ($this->isUserLogged()) {
             echo "Bienvenue, utilisateur connecté !";
         } else {
-            echo "Veuillez vous connecter.";
+            $loginPage = new Login();
+            echo $loginPage();
         }
     }
 }

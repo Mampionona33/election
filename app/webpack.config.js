@@ -1,9 +1,8 @@
-// Generated using webpack-cli https://github.com/webpack/webpack-cli
-
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const autoprefixer = require("autoprefixer");
 
-const isProduction = process.env.NODE_ENV == "production";
+const isProduction = process.env.NODE_ENV === "production";
 
 const config = {
   entry: {
@@ -14,18 +13,18 @@ const config = {
     path: path.resolve(__dirname, "dist"),
     filename: "[name]-bundle.js",
   },
+  resolve: {
+    extensions: [".ts", ".js"],
+  },
   plugins: [
     new MiniCssExtractPlugin({
       filename: "style.css",
     }),
-
-    // Add your plugins here
-    // Learn more about plugins from https://webpack.js.org/configuration/plugins/
   ],
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/i,
+        test: /\.(js|jsx|ts|tsx)$/i,
         loader: "babel-loader",
       },
       {
@@ -38,9 +37,18 @@ const config = {
           MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
-            options: { importLoaders: 2 },
+            options: {
+              importLoaders: 2,
+            },
           },
-          "postcss-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: () => [autoprefixer],
+              },
+            },
+          },
           "sass-loader",
         ],
       },
@@ -48,9 +56,6 @@ const config = {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: "asset",
       },
-
-      // Add your rules for custom modules here
-      // Learn more about loaders from https://webpack.js.org/loaders/
     ],
   },
 };
