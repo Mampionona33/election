@@ -35,7 +35,7 @@ class UserModel
             [
                 'name' => 'role',
                 'type' => 'ENUM',
-                'values' => ['admin', 'operator'],
+                'values' => ['operator', 'admin'],
                 'required' => false,
             ]
         ];
