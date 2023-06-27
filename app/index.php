@@ -21,6 +21,7 @@ final class App
 
     public function __invoke()
     {
+        echo session_save_path();
         session_start();
 
         /**
