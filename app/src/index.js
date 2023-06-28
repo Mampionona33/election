@@ -24,5 +24,8 @@ const generateCandidatForm = (data) => {
 };
 
 window.addEventListener("load", () => {
-  const candidatTableHandler = new CustomTableHandler(generateCandidatForm);
+  const candidatTableHandler = new CustomTableHandler(
+    generateCandidatForm,
+    "entry"
+  );
 });

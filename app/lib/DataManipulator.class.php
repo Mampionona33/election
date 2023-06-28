@@ -8,8 +8,8 @@ use PDOException;
 
 class DataManipulator
 {
-    private $db;
-    private $dataBase;
+    protected $db;
+    protected $dataBase;
 
     public function __construct()
     {

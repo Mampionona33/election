@@ -1,9 +1,10 @@
 import { Modal, Toast } from "bootstrap";
 
 export class CustomTableHandler {
-  constructor(formTemplate) {
+  constructor(formTemplate, apiEndpoint) {
     this.addBtn = document.querySelector("#table-btn-add");
     this.handleAddBtnClick.bind(this)();
+    this.apiEndpoint = apiEndpoint;
     this.modalElement = document.createElement("div");
     this.modalElement.classList.add("modal");
     this.formTemplate = formTemplate;
@@ -37,11 +38,35 @@ export class CustomTableHandler {
   }
 
   handleFormSubmit(ev) {
-    // ev.preventDefault();
-    // const form = ev.target;
-    // const formData = new FormData(form);
-    // const data = Object.fromEntries(formData.entries());
-    console.log("test");
+    ev.preventDefault();
+    const form = ev.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    const submitButton = form.querySelector(`#${this.buttonSubmitId}`);
+
+    if (submitButton.id === "submit_modal_create") {
+      console.log(data);
+      this.postData(data).then((resp) => {
+        console.log(resp);
+      });
+    }
+  }
+
+  async postData(data) {
+    try {
+      const response = await fetch(`/${this.apiEndpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const resp = await response.json();
+      return {
+        status: response.status,
+        data: resp,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   generateModal(title = "Title", data = []) {

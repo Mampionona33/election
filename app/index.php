@@ -1,6 +1,7 @@
 <?php
 // Gestion des erreurs probables
 
+use Api\CandidatApi;
 use controller\CandidatController;
 
 error_reporting(E_ALL);
@@ -14,6 +15,7 @@ final class App
     private $router;
     private $userController;
     private $candidatController;
+    private $candidatApi;
 
     function __construct()
     {
@@ -22,6 +24,7 @@ final class App
         $this->router = new router\Router();
         $this->userController = new controller\UserController();
         $this->candidatController = new CandidatController();
+        $this->candidatApi = new CandidatApi();
     }
 
     public function __invoke()
@@ -40,7 +43,7 @@ final class App
         $this->router->post("/login", [$this->userController, 'handleLogin']);
         $this->router->get("/logout", [$this->userController, "logout"]);
         $this->router->get("/entry", [$this->userController, "handleEntry"]);
-        $this->router->post("/entry", [$this->candidatController, "handleCreate"]);
+        $this->router->post("/entry", [$this->candidatApi, "handleCreate"]);
 
         $this->router->handleRequest();
     }

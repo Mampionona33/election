@@ -3,6 +3,7 @@
 namespace controller;
 
 use lib\CustomTable;
+use model\CandidatModel;
 use model\UserModel;
 use template\TemplateRenderer;
 use views\Login;
@@ -16,6 +17,7 @@ class UserController
     private $userLogged;
     private $login;
     private $adminSideBarItem;
+    private $candidatModel;
 
     public function __construct()
     {
@@ -23,6 +25,7 @@ class UserController
         $this->templateRenderer = new TemplateRenderer();
         $this->navBar = new Navbar();
         $this->login = new Login();
+        $this->candidatModel = new CandidatModel();
         $this->adminSideBarItem = [
             ['path' => '/', 'label' => 'Accueil'],
             ['path' => '/entry', 'label' => 'Saisie'],
@@ -132,10 +135,12 @@ class UserController
     private function pageEntryContent(): string
     {
         $tableHeader = ["id_candidat", "Nom", "Nombre de voix", "Pourcentage"];
-        $tableCandidat = new CustomTable("candidat", $tableHeader, []);
+        $listCandidat = $this->candidatModel->getCandidats();
+        $tableCandidat = new CustomTable("candidat", $tableHeader, $listCandidat);
         $tableCandidat->setBtnEditeState(true);
         $tableCandidat->setBtnDeleteState(true);
         $tableCandidat->setAddBtnVisible(true);
+
         $table = $tableCandidat->renderTable();
 
         return <<<HTML
