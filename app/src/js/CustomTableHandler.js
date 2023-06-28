@@ -1,59 +1,80 @@
+import { Modal, Toast } from "bootstrap";
+
 export class CustomTableHandler {
-  constructor(apiEndpoint) {
-    this.apiEndpoint = apiEndpoint;
-    this.modalAdd = document.querySelector("#formModalAdd");
-    this.modalAddButtonAdd = document.querySelector("#addButton");
-    this.handleSubmitAdd();
+  constructor(formTemplate) {
+    this.addBtn = document.querySelector("#table-btn-add");
+    this.handleAddBtnClick.bind(this)();
+    this.modalElement = document.createElement("div");
+    this.modalElement.classList.add("modal");
+    this.formTemplate = formTemplate;
   }
 
-  handleSubmitAdd() {
-    if (this.modalAdd) {
-      this.modalAdd.addEventListener("submit", async (ev) => {
+  handleAddBtnClick() {
+    if (this.addBtn) {
+      this.addBtn.addEventListener("click", (ev) => {
         ev.preventDefault();
-
-        if (!this.validateForm()) {
-          return;
-        }
-        try {
-          const form = ev.target;
-          const formData = new FormData(form);
-          // console.log(formData);
-          const response = await this.postDataToApi(formData);
-          // Traiter la réponse de l'API ici
-          console.log(response);
-        } catch (error) {
-          // Gérer les erreurs de l'API ici
-          console.error(error);
-        }
+        const modalForm = this.generateModal();
+        this.showModal(modalForm);
       });
     }
   }
 
-  async postDataToApi(postData) {
-    try {
-      const response = await fetch(`/${this.apiEndpoint}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Object.fromEntries(postData)),
+  showModal(modalForm) {
+    // const modalForm = this.generateModal(title, data);
+    if (modalForm) {
+      this.modalElement.innerHTML = modalForm;
+      document.body.appendChild(this.modalElement);
+      this.modal = new Modal(this.modalElement, {
+        backdrop: true,
+        keyboard: true,
       });
-      const data = await response.json();
-      return {
-        status: response.status,
-        data: data,
-      };
-    } catch (error) {
-      throw error;
     }
+
+    // Ecouter l'événement de soumission du formulaire
+    const form = this.modalElement.querySelector("#form_modal");
+    form.addEventListener("submit", this.handleFormSubmit.bind(this));
+    this.modal.show();
   }
 
-  validateForm() {
-    const inputFields = document.querySelectorAll("#formModalAdd input");
-    for (let i = 0; i < inputFields.length; i++) {
-      if (inputFields[i].value.trim() === "") {
-        alert("Veuillez remplir tous les champs");
-        return false;
-      }
-    }
-    return true;
+  handleFormSubmit(ev) {
+    // ev.preventDefault();
+    // const form = ev.target;
+    // const formData = new FormData(form);
+    // const data = Object.fromEntries(formData.entries());
+    console.log("test");
+  }
+
+  generateModal(title = "Title", data = []) {
+    const buttonSubmitText =
+      Object.keys(data).length === 0 ? "Ajouter" : "Modifier";
+
+    this.buttonSubmitId =
+      Object.keys(data).length === 0
+        ? "submit_modal_create"
+        : "submit_modal_update";
+
+    return `
+        <div class="modal-dialog modal-dialog-centered "> <!-- Ajoutez la classe "modal-lg" pour agrandir la largeur -->
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">${title}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" id="form_modal">
+              <div class="modal-body">
+                <div class="d-flex justify-content-center align-items-center">
+                  <div class="col-9">${this.formTemplate(data)}</div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="${
+                  this.buttonSubmitId
+                }" class="btn btn-primary">${buttonSubmitText}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
   }
 }

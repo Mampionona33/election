@@ -1,5 +1,8 @@
 <?php
 // Gestion des erreurs probables
+
+use controller\CandidatController;
+
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 // ----------------------------
@@ -10,6 +13,7 @@ final class App
 {
     private $router;
     private $userController;
+    private $candidatController;
 
     function __construct()
     {
@@ -17,6 +21,7 @@ final class App
         spl_autoload_register([$autoload, 'loadClass']);
         $this->router = new router\Router();
         $this->userController = new controller\UserController();
+        $this->candidatController = new CandidatController();
     }
 
     public function __invoke()
@@ -35,6 +40,7 @@ final class App
         $this->router->post("/login", [$this->userController, 'handleLogin']);
         $this->router->get("/logout", [$this->userController, "logout"]);
         $this->router->get("/entry", [$this->userController, "handleEntry"]);
+        $this->router->post("/entry", [$this->candidatController, "handleCreate"]);
 
         $this->router->handleRequest();
     }

@@ -18,6 +18,10 @@ class CandidatController
             // Récupérer les données du formulaire ici
             $name = $_POST["name"];
             $nbVoix = $_POST["nbVoix"];
+
+            if ($name && $nbVoix) {
+                echo "ok";
+            }
         }
     }
 }
