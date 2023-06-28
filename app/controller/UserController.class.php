@@ -2,6 +2,7 @@
 
 namespace controller;
 
+use lib\CustomCard;
 use lib\CustomTable;
 use model\CandidatModel;
 use model\UserModel;
@@ -18,6 +19,7 @@ class UserController
     private $login;
     private $adminSideBarItem;
     private $candidatModel;
+    private $customCard;
 
     public function __construct()
     {
@@ -29,7 +31,8 @@ class UserController
         $this->adminSideBarItem = [
             ['path' => '/', 'label' => 'Accueil'],
             ['path' => '/entry', 'label' => 'Saisie'],
-        ];;
+        ];
+        $this->customCard = new CustomCard();
     }
 
     private function isUserLogged(): bool
@@ -71,10 +74,25 @@ class UserController
 
     private function electionResult()
     {
+        $firstCandidatResult = $this->candidatModel->getFirstCandidatResult();
+        $candidatName = $firstCandidatResult["name"];
+        $candidatResult = $firstCandidatResult["result"];
+        var_dump($firstCandidatResult);
+
+        $this->customCard->setTitle("Résultat pour le candidat $candidatName");
+        $result = "";
+
+        if ($candidatResult >= 50) {
+            $result .= "$candidatName est élu au premier tour";
+        }
+
+        // $this->customCard->setContent();
+        if ($candidatResult)
+            $customCard = $this->customCard->__invoke();
         return <<<HTML
         <div class="d-flex w-100 justify-content-center align-items-center">
             <p>
-                test
+                $customCard
             </p>
         </div>
         HTML;
