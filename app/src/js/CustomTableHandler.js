@@ -8,6 +8,10 @@ export class CustomTableHandler {
     this.modalElement = document.createElement("div");
     this.modalElement.classList.add("modal");
     this.formTemplate = formTemplate;
+    this.toastElement = document.createElement("div");
+    this.removeModal();
+    this.removeHiddenToast();
+    this.toast;
   }
 
   handleAddBtnClick() {
@@ -21,7 +25,6 @@ export class CustomTableHandler {
   }
 
   showModal(modalForm) {
-    // const modalForm = this.generateModal(title, data);
     if (modalForm) {
       this.modalElement.innerHTML = modalForm;
       document.body.appendChild(this.modalElement);
@@ -37,6 +40,28 @@ export class CustomTableHandler {
     this.modal.show();
   }
 
+  removeModal() {
+    this.modalElement.addEventListener("hide.bs.modal", () => {
+      this.modalElement.remove();
+    });
+  }
+
+  removeHiddenToast() {
+    document.body.addEventListener("hidden.bs.toast", (event) => {
+      this.toastElement.remove();
+      window.location.reload();
+    });
+  }
+
+  showToaster(toaster) {
+    if (toaster) {
+      this.toastElement.innerHTML = toaster;
+      document.body.appendChild(this.toastElement);
+      this.toast = new Toast(this.toastElement.querySelector(".toast"));
+      this.toast.show();
+    }
+  }
+
   handleFormSubmit(ev) {
     ev.preventDefault();
     const form = ev.target;
@@ -45,9 +70,19 @@ export class CustomTableHandler {
     const submitButton = form.querySelector(`#${this.buttonSubmitId}`);
 
     if (submitButton.id === "submit_modal_create") {
-      console.log(data);
       this.postData(data).then((resp) => {
-        console.log(resp);
+        const title = Object.keys(resp.data)[0];
+        const message = Object.values(resp.data)[0];
+        if (resp.status == 200) {
+          const createdCandidatToast = this.generateToast(title, message);
+
+          this.modal.hide();
+          this.showToaster(createdCandidatToast);
+
+          setTimeout(() => {
+            this.toast.hide();
+          }, 1500);
+        }
       });
     }
   }
@@ -101,5 +136,21 @@ export class CustomTableHandler {
           </div>
         </div>
       `;
+  }
+
+  generateToast(title = "Title", message = "message") {
+    return `
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto">${title}</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+          ${message}
+        </div>
+      </div>
+    </div>
+    `;
   }
 }
