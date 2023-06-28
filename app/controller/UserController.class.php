@@ -140,7 +140,7 @@ class UserController
 
         return <<<HTML
         <div class="d-flex align-items-center w-100 justify-content-center" >
-            $table;
+            $table
         </div>
         HTML;
     }
