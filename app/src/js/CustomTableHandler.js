@@ -1,13 +1,14 @@
 import { Modal, Toast } from "bootstrap";
 
 export class CustomTableHandler {
-  constructor(formTemplate, apiEndpoint) {
+  constructor(formTemplate, apiEndpoint, ressourceId) {
     this.addBtn = document.querySelector("#table-btn-add");
     this.apiEndpoint = apiEndpoint;
     this.modalElement = document.createElement("div");
     this.modalElement.classList.add("modal");
     this.formTemplate = formTemplate;
     this.toastElement = document.createElement("div");
+    this.ressourceId = ressourceId;
     this.removeModal();
     this.removeHiddenToast();
     this.toast;
@@ -20,59 +21,31 @@ export class CustomTableHandler {
     if (this.addBtn) {
       this.addBtn.addEventListener("click", (ev) => {
         ev.preventDefault();
-        const modalForm = this.generateModal();
+        const modalForm = this.generateModal("Créer");
         this.showModal(modalForm);
       });
     }
   }
 
   handleClickEditBtn() {
-    this.buttonEdits = document.querySelectorAll('button[name="delete"]');
+    this.buttonEdits = document.querySelectorAll('button[name="edit"]');
     this.buttonEdits.forEach((buttonEdit) => {
-      buttonEdit.addEventListener("click", (ev) => {
+      buttonEdit.addEventListener("click", async (ev) => {
         ev.preventDefault();
         this.rowId = ev.target.dataset.id;
-        console.log(this.rowId);
+        try {
+          const res = await this.getData();
+          if (res.status === 200) {
+            const data = res.data && res.data.data;
+
+            const modalEdit = this.generateModal("Modifier", data[0]);
+            this.showModal(modalEdit);
+          }
+        } catch (error) {
+          console.error(error);
+        }
       });
     });
-  }
-
-  showModal(modalForm) {
-    if (modalForm) {
-      this.modalElement.innerHTML = modalForm;
-      document.body.appendChild(this.modalElement);
-      this.modal = new Modal(this.modalElement, {
-        backdrop: true,
-        keyboard: true,
-      });
-    }
-
-    // Ecouter l'événement de soumission du formulaire
-    const form = this.modalElement.querySelector("#form_modal");
-    form.addEventListener("submit", this.handleFormSubmit.bind(this));
-    this.modal.show();
-  }
-
-  removeModal() {
-    this.modalElement.addEventListener("hide.bs.modal", () => {
-      this.modalElement.remove();
-    });
-  }
-
-  removeHiddenToast() {
-    document.body.addEventListener("hidden.bs.toast", (event) => {
-      this.toastElement.remove();
-      window.location.reload();
-    });
-  }
-
-  showToaster(toaster) {
-    if (toaster) {
-      this.toastElement.innerHTML = toaster;
-      document.body.appendChild(this.toastElement);
-      this.toast = new Toast(this.toastElement.querySelector(".toast"));
-      this.toast.show();
-    }
   }
 
   handleFormSubmit(ev) {
@@ -100,22 +73,17 @@ export class CustomTableHandler {
     }
   }
 
-  async postData(data) {
-    try {
-      const response = await fetch(`/${this.apiEndpoint}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      const resp = await response.json();
-      return {
-        status: response.status,
-        data: resp,
-      };
-    } catch (error) {
-      throw error;
-    }
-  }
+  /**
+   * Gestion des modales et toast
+   */
+  // -----------------------------------------
+  /**
+   * Génère le contenu d'une modal Bootstrap avec un titre et des données.
+   *
+   * @param {string} title - Le titre de la modal.
+   * @param {Array} data - Les données à afficher dans la modal (par défaut : []).
+   * @returns {string} - Le contenu HTML de la modal générée.
+   */
 
   generateModal(title = "Title", data = []) {
     const buttonSubmitText =
@@ -165,5 +133,82 @@ export class CustomTableHandler {
       </div>
     </div>
     `;
+  }
+
+  showToaster(toaster) {
+    if (toaster) {
+      this.toastElement.innerHTML = toaster;
+      document.body.appendChild(this.toastElement);
+      this.toast = new Toast(this.toastElement.querySelector(".toast"));
+      this.toast.show();
+    }
+  }
+
+  showModal(modalForm) {
+    if (modalForm) {
+      this.modalElement.innerHTML = modalForm;
+      document.body.appendChild(this.modalElement);
+      this.modal = new Modal(this.modalElement, {
+        backdrop: true,
+        keyboard: true,
+      });
+    }
+
+    // Ecouter l'événement de soumission du formulaire
+    const form = this.modalElement.querySelector("#form_modal");
+    form.addEventListener("submit", this.handleFormSubmit.bind(this));
+    this.modal.show();
+  }
+
+  removeModal() {
+    this.modalElement.addEventListener("hide.bs.modal", () => {
+      this.modalElement.remove();
+    });
+  }
+
+  removeHiddenToast() {
+    document.body.addEventListener("hidden.bs.toast", (event) => {
+      this.toastElement.remove();
+      window.location.reload();
+    });
+  }
+
+  /**
+   * List async functions
+   */
+  async postData(data) {
+    try {
+      const response = await fetch(`/${this.apiEndpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const resp = await response.json();
+      return {
+        status: response.status,
+        data: resp,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getData() {
+    try {
+      const resp = await fetch(
+        `/${this.apiEndpoint}?${this.ressourceId}=${this.rowId}`
+      );
+      if (!resp.ok) {
+        throw new Error("Unable to fetch data from API.");
+      }
+      const data = await resp.json();
+      return {
+        status: resp.status,
+        data,
+      };
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }

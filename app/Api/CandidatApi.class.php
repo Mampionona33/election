@@ -50,9 +50,9 @@ class CandidatApi extends Api
     public function handleGetCandidat(): void
     {
         if ($this->verifySession()) {
-            if ($_SERVER["REQUEST_METHOD"] === "POST") {
-                if (isset($_POST["id_candidat"])) {
-                    $id_candidat = $_POST["id_candidat"];
+            if ($_SERVER["REQUEST_METHOD"] === "GET") {
+                if (isset($_GET["id_candidat"])) {
+                    $id_candidat = $_GET["id_candidat"];
                     $candidtat = $this->candidatModel->getCandidat($id_candidat);
                     if (!empty($candidtat)) {
                         $this->sendResponse(200, ["data" => $candidtat]);
