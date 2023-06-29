@@ -41,7 +41,8 @@ final class App
         $this->router->post("/login", [$this->userController, 'handleLogin']);
         $this->router->get("/logout", [$this->userController, "logout"]);
         $this->router->get("/entry", [$this->userController, "handleEntry"]);
-        $this->router->post("/entry", [$this->candidatApi, "handleCreate"]);
+        $this->router->post("/api/entry", [$this->candidatApi, "handleCreate"]);
+        $this->router->get("/api/entry", [$this->candidatApi, "handleCreate"]);
 
         $this->router->handleRequest();
     }

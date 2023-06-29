@@ -83,9 +83,12 @@ class CandidatModel extends DataManipulator
         return [];
     }
 
-    public function getCandidatPercentage(): int
+    public function getCandidat($id): array
     {
-
-        return 0;
+        $candidat = $this->dataManipulator->getData($this->tableName, [], "id_candidat = '$id'");
+        if (!empty($candidat)) {
+            return $candidat;
+        }
+        return [];
     }
 }
