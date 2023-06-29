@@ -58,7 +58,7 @@ class CustomCard
         $iconTextColor = $this->iconTextColor;
         if (isset($this->icon)) {
             return <<<HTML
-            <span class="material-icons-outlined rounded-circle p-1" style="background-color:$iconBackgroundColor; color:$iconTextColor; font-size:2.5rem;">
+            <span class="material-icons-outlined rounded-circle p-1 m-2" style="background-color:$iconBackgroundColor; color:$iconTextColor; font-size:2.5rem;">
                 $this->icon
             </span>
             HTML;
@@ -83,11 +83,12 @@ class CustomCard
         <div class="global-data-card m-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body" style="background-color: $cardBackgroundColor; color: $textColor;">
-                    <div class="d-flex gap-5 align-items-center">
-                        <h5 class="card-title text-capitalize">$cardTitle</h5>
+                    <div class="d-flex align-items-center">
+                        <h5 class="card-title text-capitalize flex-grow-1">$cardTitle</h5>
                         $iconHtml
                     </div>
-                    <h6 class="card-subtitle mb-2" style="color: $textColor;">$content</h6>
+                    <hr class="hr" >
+                    <h6 class="d-flex card-subtitle mb-2 mt-2" style="color: $textColor;">$content</h6>
                 </div>
             </div>
         </div>

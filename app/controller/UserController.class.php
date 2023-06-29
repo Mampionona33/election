@@ -20,6 +20,15 @@ class UserController
     private $adminSideBarItem;
     private $candidatModel;
     private $customCard;
+    private $firstCandidat;
+    private $candidatMaxPoint;
+    private $firstCandidatName;
+    private $firstCandidatPoint;
+    private $firstCandidatPercentage;
+    private $candidatMaxPointPercentage;
+    private $firstCandidatId;
+    private $candidatMaxPointId;
+    private $candidatMaxName;
 
     public function __construct()
     {
@@ -28,11 +37,25 @@ class UserController
         $this->navBar = new Navbar();
         $this->login = new Login();
         $this->candidatModel = new CandidatModel();
+        $this->firstCandidat = $this->candidatModel->getFirstCandidatResult();
+        $this->candidatMaxPoint = $this->candidatModel->getCandidatMaxPoint();
+
+        $this->firstCandidatId = count($this->firstCandidat) > 0 ? floatval($this->firstCandidat[0]["id_candidat"]) : null;
+        $this->candidatMaxPointId = count($this->candidatMaxPoint) > 0 ? floatval($this->candidatMaxPoint[0]["id_candidat"]) : null;
+
+        $this->firstCandidatPercentage = count($this->firstCandidat) > 0 ? floatval($this->firstCandidat[0]["percentage"]) : null;
+        $this->candidatMaxPointPercentage = count($this->candidatMaxPoint) > 0 ? floatval($this->candidatMaxPoint[0]["percentage"]) : null;
+
+        $this->firstCandidatName = count($this->firstCandidat) > 0 ? $this->firstCandidat[0]["name"] : null;
+        $this->candidatMaxName = count($this->candidatMaxPoint) > 0 ? $this->candidatMaxPoint[0]["name"] : null;
+
+
         $this->adminSideBarItem = [
             ['path' => '/', 'label' => 'Accueil'],
-            ['path' => '/entry', 'label' => 'Saisie'],
+            ['path' => '/entry', 'label' => 'Gestion des candidats'],
         ];
         $this->customCard = new CustomCard();
+        $this->customCard->setIcon("how_to_vote");
     }
 
     private function isUserLogged(): bool
@@ -74,21 +97,30 @@ class UserController
 
     private function electionResult()
     {
-        $firstCandidatResult = $this->candidatModel->getFirstCandidatResult();
-        $candidatName = $firstCandidatResult["name"];
-        $candidatResult = $firstCandidatResult["result"];
-        var_dump($firstCandidatResult);
-
-        $this->customCard->setTitle("Résultat pour le candidat $candidatName");
         $result = "";
 
-        if ($candidatResult >= 50) {
-            $result .= "$candidatName est élu au premier tour";
+        if (isset($this->firstCandidatId) && isset($this->candidatMaxPointId)) {
+
+            $this->customCard->setTitle("Résultat pour le candidat : $this->firstCandidatName");
+
+            if ($this->firstCandidatPercentage > 50) {
+                $result .= "$this->firstCandidatName est élu à la première tour avec un suffrage de $this->firstCandidatPercentage %.";
+            } elseif ($this->firstCandidatPercentage < 50 && $this->candidatMaxPointPercentage > 50) {
+                $result .= "Le candidat $this->firstCandidatName est battu à la première tour avec un suffrage de $this->firstCandidatPercentage %.";
+            } elseif ($this->firstCandidatPercentage < 50 && $this->candidatMaxPointPercentage < 50) {
+                if ($this->firstCandidatPercentage > 12.5) {
+                    if ($this->firstCandidatPercentage >= $this->candidatMaxPointPercentage) {
+                        $result .= "Le candidat $this->firstCandidatName participe au deuxième tour en ballotage favorable avec un suffrage de $this->firstCandidatPercentage %.";
+                    } else {
+                        $result .= "Le candidat $this->firstCandidatName participe au deuxième tour en ballotage défavorable avec un suffrage de $this->firstCandidatPercentage %.";
+                    }
+                }
+            }
         }
 
-        // $this->customCard->setContent();
-        if ($candidatResult)
-            $customCard = $this->customCard->__invoke();
+        $this->customCard->setContent($result);
+        $customCard = $this->customCard->__invoke();
+
         return <<<HTML
         <div class="d-flex w-100 justify-content-center align-items-center">
             <p>

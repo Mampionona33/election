@@ -67,14 +67,18 @@ class CandidatModel extends DataManipulator
 
     public function getFirstCandidatResult(): array
     {
-        $firstCandidatResult = $this->dataManipulator->getData($this->tableName, ["MIN(nbVoix)*100 /(SELECT SUM(nbVoix) FROM Candidats) AS firstCandidatResult"]);
-        $firstCandidatName = $this->dataManipulator->getData($this->tableName, ["name"], "nbVoix = (SELECT MIN(nbVoix) FROM $this->tableName)");
-        // $otherCandidatMaxResult = $this->dataManipulator->getData();
+        $firstCandidatResult = $this->dataManipulator->getData($this->tableName, ["id_candidat", "name", "ROUND(nbVoix*100 / (SELECT SUM(nbVoix) FROM Candidats)) AS percentage"], "id_candidat = (SELECT MIN(id_candidat) FROM $this->tableName)");
+        if (isset($firstCandidatResult)) {
+            return $firstCandidatResult;
+        }
+        return [];
+    }
 
-        if (!empty($firstCandidatName[0]) && !empty($firstCandidatResult[0])) {
-            $firstCandidatResultOut = floatval($firstCandidatResult[0]['firstCandidatResult']);
-            $firstCandidatNameOut = $firstCandidatName[0]['name'];
-            return array('name' => $firstCandidatNameOut, "result" => $firstCandidatResultOut);
+    public function getCandidatMaxPoint(): array
+    {
+        $candidatMaxPoint = $this->dataManipulator->getData($this->tableName, ["*", "ROUND(nbVoix*100 / (SELECT SUM(nbVoix) FROM Candidats)) AS percentage"], "nbVoix = (SELECT MAX(nbVoix) FROM $this->tableName)");
+        if (isset($candidatMaxPoint)) {
+            return $candidatMaxPoint;
         }
         return [];
     }
