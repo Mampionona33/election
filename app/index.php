@@ -2,7 +2,6 @@
 // Gestion des erreurs probables
 
 use Api\CandidatApi;
-use controller\CandidatController;
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -14,7 +13,6 @@ final class App
 {
     private $router;
     private $userController;
-    private $candidatController;
     private $candidatApi;
 
     function __construct()
@@ -23,14 +21,14 @@ final class App
         spl_autoload_register([$autoload, 'loadClass']);
         $this->router = new router\Router();
         $this->userController = new controller\UserController();
-        $this->candidatController = new CandidatController();
         $this->candidatApi = new CandidatApi();
     }
 
     public function __invoke()
     {
-        echo session_save_path();
+        session_save_path(__DIR__ . "/tmp");
         session_start();
+        // echo session_save_path();
 
         /**
          * equivalent a :
