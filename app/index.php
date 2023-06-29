@@ -22,13 +22,11 @@ final class App
         $this->router = new router\Router();
         $this->userController = new controller\UserController();
         $this->candidatApi = new CandidatApi();
+        session_save_path(__DIR__ . "/tmp");
     }
 
     public function __invoke()
     {
-        session_save_path(__DIR__ . "/tmp");
-        session_start();
-        // echo session_save_path();
 
         /**
          * equivalent a :

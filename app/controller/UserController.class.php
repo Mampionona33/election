@@ -65,6 +65,8 @@ class UserController
         return false;
     }
 
+
+
     private function setAdminSidebarContent(): void
     {
         if ($this->isUserLogged()) {
@@ -87,7 +89,11 @@ class UserController
 
     public function handleHome(): void
     {
-        $this->redirectIfUserNotLogged();
+        if ($this->isUserLogged()) {
+            session_start();
+            var_dump($_SESSION);
+        }
+        // $this->redirectIfUserNotLogged();
         $this->setAdminSidebarContent();
         $this->templateRenderer->setBodyContent($this->electionResult());
         echo $this->templateRenderer->render("Home");
@@ -116,8 +122,6 @@ class UserController
             }
         }
 
-        var_dump($result);
-
         $this->customCard->setContent($result);
         $customCard = $this->customCard->__invoke();
 
@@ -133,10 +137,6 @@ class UserController
 
     public function loginPage(): void
     {
-        if ($this->isUserLogged()) {
-            header("Location: /");
-            exit();
-        }
         $this->templateRenderer->setBodyContent($this->login->__invoke());
         echo $this->templateRenderer->render("Login");
         exit();
@@ -150,11 +150,11 @@ class UserController
                 $this->userLogged = $this->userModel->getUserByEmail($_POST);
 
                 if (count($this->userLogged) > 0) {
+                    session_start();
                     $_SESSION["user"] = $this->userLogged;
-                    header("Location: /");
+                    header("Location: /", true, 302);
                     exit();
                 } else {
-                    // Utilisateur non autorisé (mot de passe incorrect)
                     header("HTTP/1.1 401");
                     $this->loginPage();
                     exit();
@@ -170,7 +170,7 @@ class UserController
 
     public function handleEntry(): void
     {
-        $this->redirectIfUserNotLogged();
+        // $this->redirectIfUserNotLogged();
         $this->setAdminSidebarContent();
         $this->templateRenderer->setBodyContent($this->pageEntryContent());
         echo $this->templateRenderer->render("Entry");
@@ -178,6 +178,7 @@ class UserController
 
     public function logout(): void
     {
+        session_start();
         session_destroy();
         header("Location: /");
         exit();
