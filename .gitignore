@@ -135,4 +135,4 @@ dist
 dist/
 # Ignore mysql-data : local mysql data for this project
 mysql-data/
-**/tmp/
+**/tmp/**
