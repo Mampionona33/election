@@ -49,7 +49,6 @@ class UserController
         $this->firstCandidatName = count($this->firstCandidat) > 0 ? $this->firstCandidat[0]["name"] : null;
         $this->candidatMaxName = count($this->candidatMaxPoint) > 0 ? $this->candidatMaxPoint[0]["name"] : null;
 
-
         $this->adminSideBarItem = [
             ['path' => '/', 'label' => 'Accueil'],
             ['path' => '/entry', 'label' => 'Gestion des candidats'],
@@ -100,35 +99,37 @@ class UserController
         $result = "";
 
         if (isset($this->firstCandidatId) && isset($this->candidatMaxPointId)) {
-
             $this->customCard->setTitle("Résultat pour le candidat : $this->firstCandidatName");
 
             if ($this->firstCandidatPercentage > 50) {
                 $result .= "$this->firstCandidatName est élu à la première tour avec un suffrage de $this->firstCandidatPercentage %.";
-            } elseif ($this->firstCandidatPercentage < 50 && $this->candidatMaxPointPercentage > 50) {
+            } elseif ($this->candidatMaxPointPercentage > 50) {
                 $result .= "Le candidat $this->firstCandidatName est battu à la première tour avec un suffrage de $this->firstCandidatPercentage %.";
-            } elseif ($this->firstCandidatPercentage < 50 && $this->candidatMaxPointPercentage < 50) {
-                if ($this->firstCandidatPercentage > 12.5) {
-                    if ($this->firstCandidatPercentage >= $this->candidatMaxPointPercentage) {
-                        $result .= "Le candidat $this->firstCandidatName participe au deuxième tour en ballotage favorable avec un suffrage de $this->firstCandidatPercentage %.";
-                    } else {
-                        $result .= "Le candidat $this->firstCandidatName participe au deuxième tour en ballotage défavorable avec un suffrage de $this->firstCandidatPercentage %.";
-                    }
+            } elseif ($this->firstCandidatPercentage > 12.5) {
+                if ($this->firstCandidatPercentage >= $this->candidatMaxPointPercentage) {
+                    $result .= "Le candidat $this->firstCandidatName participe au deuxième tour en ballotage favorable avec un suffrage de $this->firstCandidatPercentage %.";
+                } else {
+                    $result .= "Le candidat $this->firstCandidatName participe au deuxième tour en ballotage défavorable avec un suffrage de $this->firstCandidatPercentage %.";
                 }
+            } else {
+                $result .= "Le candidat $this->firstCandidatName est battu à la première tour avec un suffrage de $this->firstCandidatPercentage %.";
             }
         }
+
+        var_dump($result);
 
         $this->customCard->setContent($result);
         $customCard = $this->customCard->__invoke();
 
         return <<<HTML
-        <div class="d-flex w-100 justify-content-center align-items-center">
-            <p>
-                $customCard
-            </p>
-        </div>
+            <div class="d-flex w-100 justify-content-center align-items-center">
+                <p>
+                    $customCard
+                </p>
+            </div>
         HTML;
     }
+
 
     public function loginPage(): void
     {

@@ -3,7 +3,6 @@ import { Modal, Toast } from "bootstrap";
 export class CustomTableHandler {
   constructor(formTemplate, apiEndpoint) {
     this.addBtn = document.querySelector("#table-btn-add");
-    this.handleAddBtnClick.bind(this)();
     this.apiEndpoint = apiEndpoint;
     this.modalElement = document.createElement("div");
     this.modalElement.classList.add("modal");
@@ -12,6 +11,9 @@ export class CustomTableHandler {
     this.removeModal();
     this.removeHiddenToast();
     this.toast;
+    // run event handlers
+    this.handleAddBtnClick.bind(this)();
+    this.handleClickEditBtn.bind(this)();
   }
 
   handleAddBtnClick() {
@@ -22,6 +24,17 @@ export class CustomTableHandler {
         this.showModal(modalForm);
       });
     }
+  }
+
+  handleClickEditBtn() {
+    this.buttonEdits = document.querySelectorAll('button[name="delete"]');
+    this.buttonEdits.forEach((buttonEdit) => {
+      buttonEdit.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        this.rowId = ev.target.dataset.id;
+        console.log(this.rowId);
+      });
+    });
   }
 
   showModal(modalForm) {
