@@ -13,6 +13,7 @@ class CandidatModel extends DataManipulator
     private $columns;
     private $dataManipulator;
     private $tableManipulator;
+    private $id_key;
 
     public function __construct()
     {
@@ -40,6 +41,7 @@ class CandidatModel extends DataManipulator
         $this->dataManipulator = new DataManipulator();
         $this->tableManipulator = new TableManipulator();
         $this->tableManipulator->createTable($this->tableName, $this->columns);
+        $this->id_key = "id_candidat";
     }
 
     public function createCandidat($data)
@@ -90,5 +92,14 @@ class CandidatModel extends DataManipulator
             return $candidat;
         }
         return [];
+    }
+
+    public function update($data): bool
+    {
+        $updateCandidat = $this->dataManipulator->updateData($this->tableName, $data, $this->id_key, $data["$this->id_key"]);
+        if ($updateCandidat) {
+            return true;
+        }
+        return false;
     }
 }

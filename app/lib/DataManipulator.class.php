@@ -72,7 +72,7 @@ class DataManipulator
         }
     }
 
-    public function updateData(string $tableName, array $data, $id_key, $id_value)
+    public function updateData(string $tableName, array $data, $id_key, $id_value): bool
     {
         $placeholders = '';
         $updateValues = '';

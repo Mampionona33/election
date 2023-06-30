@@ -71,6 +71,25 @@ export class CustomTableHandler {
         }
       });
     }
+    if (submitButton.id === "submit_modal_update") {
+      data[this.ressourceId] = parseInt(this.rowId);
+
+      this.putData(data).then((resp) => {
+        const title = Object.keys(resp.data)[0];
+        const message = Object.values(resp.data)[0];
+
+        if (resp.status === 201) {
+          const updateCandidatToast = this.generateToast(title, message);
+
+          this.modal.hide();
+          this.showToaster(updateCandidatToast);
+
+          setTimeout(() => {
+            this.toast.hide();
+          }, 1500);
+        }
+      });
+    }
   }
 
   /**
@@ -208,6 +227,24 @@ export class CustomTableHandler {
       };
     } catch (error) {
       console.error(error);
+      throw error;
+    }
+  }
+
+  async putData(data) {
+    try {
+      const response = await fetch(`/${this.apiEndpoint}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const resp = await response.json();
+      return {
+        status: response.status,
+        data: resp,
+      };
+    } catch (error) {
+      console.log(error);
       throw error;
     }
   }

@@ -42,14 +42,45 @@ class CandidatApi extends Api
 
     public function handleEdit(): void
     {
-        // if ($this->verifySession()) {
-        //     $candidta = $this->candidatModel->getCandidat($id);
-        // } else {
-        //     $this->sendResponse(403, ["error" => "Vous n'êtes pas autorisé à faire cette action."]);
-        // }
+        if ($this->verifySession()) {
+            if ($_SERVER["REQUEST_METHOD"] === "PUT") {
+                // Get the raw input data
+                $inputData = file_get_contents("php://input");
+
+                // Decode the JSON data into an associative array
+                $formData = json_decode($inputData, true);
+                if (isset($formData["id_candidat"])) {
+                    $id_candidat = $formData["id_candidat"];
+                    $candidatToModified = $this->getCandidat($id_candidat);
+
+                    if (!empty($candidatToModified)) {
+                        $updateCandidat = $this->candidatModel->update($formData);
+                        if ($updateCandidat) {
+                            $this->sendResponse(201, ["Information" => "Le candidat a été modifié avec succés."]);
+                        } else {
+                            $this->sendResponse(403, ["error" => "Erreur lors de la modification du candidat"]);
+                        }
+                    }
+                }
+
+                // Access the PUT data
+                // var_dump($formData);
+            }
+        } else {
+            $this->sendResponse(403, ["error" => "Vous n'êtes pas autorisé à faire cette action."]);
+        }
     }
 
-    public function handleGetCandidat(): void
+    private function getCandidat($id): array
+    {
+        $candidat = $this->candidatModel->getCandidat($id);
+        if (!empty($candidat)) {
+            return $candidat;
+        }
+        return [];
+    }
+
+    public function handleGetCandidats(): void
     {
         if ($this->verifySession()) {
             if ($_SERVER["REQUEST_METHOD"] === "GET") {
