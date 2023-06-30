@@ -50,7 +50,7 @@ class UserController
         $this->candidatMaxName = count($this->candidatMaxPoint) > 0 ? $this->candidatMaxPoint[0]["name"] : null;
 
         $this->adminSideBarItem = [
-            ['path' => '/', 'label' => 'Accueil'],
+            ['path' => '/admin', 'label' => 'Accueil'],
             ['path' => '/entry', 'label' => 'Gestion des candidats'],
         ];
         $this->customCard = new CustomCard();
@@ -59,15 +59,13 @@ class UserController
 
     private function isUserLogged(): bool
     {
-        if (isset($_SESSION["user"])) {
-            return true;
-        }
-        return false;
+        return isset($_SESSION["user"]);
     }
 
-    private function setAdminSidebarContent(): void
+    private function generateNavbar(): void
     {
         if ($this->isUserLogged()) {
+            $this->navBar->setMenuVisible(true);
             $this->templateRenderer->setSidebarContent($this->adminSideBarItem);
         } else {
             $this->navBar->setMenuVisible(false);
@@ -76,28 +74,43 @@ class UserController
         $this->templateRenderer->setNavbarContent($this->navBar->render());
     }
 
-    private function redirectIfUserNotLogged(): void
+    private function redirectToLoginPage(): void
     {
-        if (!$this->isUserLogged() && $_SERVER['REQUEST_URI'] !== '/') {
-            header("Location: /login");
+        header("Location: /login");
+        session_destroy();
+        exit();
+    }
+
+    private function redirectToAdminHomePage(): void
+    {
+        header("Location: /admin");
+        exit();
+    }
+
+    public function adminHomePage(): void
+    {
+        session_start();
+        if (!$this->isUserLogged()) {
+            $this->redirectToLoginPage();
+        } else {
+            $this->generateNavbar();
+            $this->templateRenderer->setBodyContent($this->electionResult());
+            echo $this->templateRenderer->render("Home");
             exit();
         }
     }
 
     public function handleHome(): void
     {
-        // if (isset($_SESSION)) {
-        //     if ($this->isUserLogged()) {
-        //         session_start();
-        //         $this->setAdminSidebarContent();
-        //     }
-        // }
-        // $this->navBar->setMenuVisible(true);
-        // $this->templateRenderer->setNavbarContent($this->navBar->render());
-        // $this->redirectIfUserNotLogged();
-        // $this->templateRenderer->setBodyContent($this->electionResult());
-        // echo $this->templateRenderer->render("Home");
-        // exit();
+        session_start();
+        if (!empty($_SESSION) && $_SERVER['REQUEST_URI'] == '/') {
+            $this->redirectToAdminHomePage();
+        }
+        $this->templateRenderer->setNavbarContent($this->navBar->render());
+        $this->templateRenderer->setBodyContent($this->electionResult());
+        echo $this->templateRenderer->render("Home");
+        session_destroy();
+        exit();
     }
 
     private function electionResult()
@@ -134,7 +147,6 @@ class UserController
         HTML;
     }
 
-
     public function loginPage(): void
     {
         $this->templateRenderer->setBodyContent($this->login->__invoke());
@@ -146,14 +158,12 @@ class UserController
     {
         if (isset($_POST)) {
             if (isset($_POST["email"]) && isset($_POST["password"])) {
-
                 $this->userLogged = $this->userModel->getUserByEmail($_POST);
 
                 if (count($this->userLogged) > 0) {
                     session_start();
                     $_SESSION["user"] = $this->userLogged;
-                    header("Location: /", true, 302);
-                    exit();
+                    $this->redirectToAdminHomePage();
                 } else {
                     header("HTTP/1.1 401");
                     $this->loginPage();
@@ -163,15 +173,18 @@ class UserController
                 // Requête incorrecte (paramètres manquants)
                 header("HTTP/1.1 400");
                 $this->loginPage();
-                exit;
+                exit();
             }
         }
     }
 
     public function handleEntry(): void
     {
-        // $this->redirectIfUserNotLogged();
-        $this->setAdminSidebarContent();
+        session_start();
+        if (empty($_SESSION)) {
+            $this->redirectToLoginPage();
+        }
+        $this->generateNavbar();
         $this->templateRenderer->setBodyContent($this->pageEntryContent());
         echo $this->templateRenderer->render("Entry");
     }
@@ -180,8 +193,7 @@ class UserController
     {
         session_start();
         session_destroy();
-        header("Location: /");
-        exit();
+        $this->redirectToLoginPage();
     }
 
     private function pageEntryContent(): string

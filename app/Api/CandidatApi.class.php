@@ -31,9 +31,11 @@ class CandidatApi extends Api
                     } else {
                         $this->sendResponse(500, ["error" => "Error when trying to create candidat"]);
                     }
+                } else {
+                    $this->sendResponse(400, ["error" => "Missing name or nbVoix parameter"]);
                 }
             }
-        } {
+        } else {
             $this->sendResponse(403, ["error" => "Vous n'êtes pas autorisé à faire cette action."]);
         }
     }
@@ -53,10 +55,14 @@ class CandidatApi extends Api
             if ($_SERVER["REQUEST_METHOD"] === "GET") {
                 if (isset($_GET["id_candidat"])) {
                     $id_candidat = $_GET["id_candidat"];
-                    $candidtat = $this->candidatModel->getCandidat($id_candidat);
-                    if (!empty($candidtat)) {
-                        $this->sendResponse(200, ["data" => $candidtat]);
+                    $candidat = $this->candidatModel->getCandidat($id_candidat);
+                    if (!empty($candidat)) {
+                        $this->sendResponse(200, ["data" => $candidat]);
+                    } else {
+                        $this->sendResponse(404, ["error" => "Candidat not found"]);
                     }
+                } else {
+                    $this->sendResponse(400, ["error" => "Missing id_candidat parameter"]);
                 }
             }
         } else {
@@ -66,9 +72,11 @@ class CandidatApi extends Api
 
     private function verifySession(): bool
     {
+        session_start();
         if (isset($_SESSION["user"]) && isset($_SESSION["user"][0]) && ($_SESSION["user"][0]["role"] == "admin" || $_SESSION["user"][0]["role"] == "operator")) {
             return true;
         }
+        session_destroy();
         return false;
     }
 }
