@@ -52,6 +52,7 @@ class UserController
         $this->adminSideBarItem = [
             ['path' => '/admin', 'label' => 'Accueil'],
             ['path' => '/entry', 'label' => 'Gestion des candidats'],
+            ['path' => '/users', 'label' => 'Gestion des utilisateurs'],
         ];
         $this->customCard = new CustomCard();
         $this->customCard->setIcon("how_to_vote");
