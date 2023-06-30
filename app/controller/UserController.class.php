@@ -87,6 +87,12 @@ class UserController
         exit();
     }
 
+    private function redirectToVisitorHomePage(): void
+    {
+        header("Location: /");
+        exit();
+    }
+
     public function adminHomePage(): void
     {
         session_start();
@@ -193,7 +199,7 @@ class UserController
     {
         session_start();
         session_destroy();
-        $this->redirectToLoginPage();
+        $this->redirectToVisitorHomePage();
     }
 
     private function pageEntryContent(): string
