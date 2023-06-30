@@ -65,12 +65,9 @@ class UserController
         return false;
     }
 
-
-
     private function setAdminSidebarContent(): void
     {
         if ($this->isUserLogged()) {
-            $this->navBar->setMenuVisible(true);
             $this->templateRenderer->setSidebarContent($this->adminSideBarItem);
         } else {
             $this->navBar->setMenuVisible(false);
@@ -89,15 +86,18 @@ class UserController
 
     public function handleHome(): void
     {
-        if ($this->isUserLogged()) {
-            session_start();
-            var_dump($_SESSION);
-        }
+        // if (isset($_SESSION)) {
+        //     if ($this->isUserLogged()) {
+        //         session_start();
+        //         $this->setAdminSidebarContent();
+        //     }
+        // }
+        // $this->navBar->setMenuVisible(true);
+        // $this->templateRenderer->setNavbarContent($this->navBar->render());
         // $this->redirectIfUserNotLogged();
-        $this->setAdminSidebarContent();
-        $this->templateRenderer->setBodyContent($this->electionResult());
-        echo $this->templateRenderer->render("Home");
-        exit();
+        // $this->templateRenderer->setBodyContent($this->electionResult());
+        // echo $this->templateRenderer->render("Home");
+        // exit();
     }
 
     private function electionResult()
