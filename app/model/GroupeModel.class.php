@@ -55,7 +55,7 @@ class GroupeModel
                 'name' => 'name',
                 'type' => 'VARCHAR(50)',
                 'required' => true,
-                'auto_increment' => true,
+                'auto_increment' => false,
             ],
         ]);
         $this->setTableManipulator(new TableManipulator());

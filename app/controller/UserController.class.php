@@ -5,6 +5,8 @@ namespace controller;
 use lib\CustomCard;
 use lib\CustomTable;
 use model\CandidatModel;
+use model\GroupeModel;
+use model\RoleModel;
 use model\UserModel;
 use template\TemplateRenderer;
 use views\Login;
@@ -15,21 +17,64 @@ class UserController
 
     /**
      * TODO :
+     * - [x] create use case diagram
+     * - [x] create class diagram
      * - [x] create classe Authorisation
-     * - [] instanciate new object authorisation from Authorization
      * - [x] create RoleModel classe
      * - [x] create GroupeModel classe
-     * - [] assign roles to groupes. Using the created authorization
-     * - [] create page manage role
-     * - [] create table role on calling UserController
-     * - [] create page manage groupe
-     * - [] create table groupe on calling UserController
-     * - [] create page manage user
-     * - [] create table user on calling UserController
+     * - [x] create table Role on calling UserController
+     * - [x] create table Groupe on calling UserController
+     * - [x] create table User on calling UserController
+     * - [x] create table Candidat on calling UserController
+     * - [x] instanciate new object authorisation from Authorization
+     * - [] clean class CandidatModel
+     * - [] create UserApi for handling request from modals
+     * - [] create RoleApi for handling request from modals
+     * - [] create GroupeApi for handling request form modals
+     * - [] Refonte CandidatApi to match the authorization method
+     * - [] assign roles to groupes. Using the created object authorization
+     * - [] create visitor home page
+     * - [] create manage role page
+     * - [] create manage groupe page
+     * - [] create manage user page
+     * - [] create login page
      */
 
     private $authorization;
     private $userGroupeId;
+    private $roleModel;
+    private $userModel;
+    private $groupeModel;
+
+    public function setUserModel(UserModel $userModel): void
+    {
+        $this->userModel = $userModel;
+    }
+
+    public function getUserModel(): UserModel
+    {
+        return $this->userModel;
+    }
+
+    public function setGroupeModel(GroupeModel $groupeModel): void
+    {
+        $this->groupeModel = $groupeModel;
+    }
+
+    public function getGroupeModel(): GroupeModel
+    {
+        return $this->groupeModel;
+    }
+
+    public function setRoleModel(RoleModel $roleModel): void
+    {
+        $this->roleModel = $roleModel;
+    }
+
+    public function getRoleModel(): RoleModel
+    {
+        return $this->roleModel;
+    }
 
     public function setAuthorization(Authorization $authorization): void
     {
@@ -52,9 +97,11 @@ class UserController
 
     public function __construct()
     {
-        // $this->setAuthorization(new Authorization());
+        $this->setAuthorization(new Authorization());
+        $this->setRoleModel(new RoleModel());
+        $this->setGroupeModel(new GroupeModel());
+        $this->setUserModel(new UserModel());
     }
-
 
     public function handleHome()
     {
