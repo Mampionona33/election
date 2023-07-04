@@ -34,14 +34,14 @@ final class App
          * });
          */
         $this->router->get("/", [$this->userController, "handleHome"]);
-        $this->router->get("/admin", [$this->userController, "adminHomePage"]);
-        $this->router->get("/login", [$this->userController, "loginPage"]);
-        $this->router->post("/login", [$this->userController, 'handleLogin']);
-        $this->router->get("/logout", [$this->userController, "logout"]);
-        $this->router->get("/entry", [$this->userController, "handleEntry"]);
-        $this->router->post("/api/entry", [$this->candidatApi, "handleCreate"]);
-        $this->router->get("/api/entry", [$this->candidatApi, "handleGetCandidats"]);
-        $this->router->put("/api/entry", [$this->candidatApi, "handleEdit"]);
+        // $this->router->get("/admin", [$this->userController, "adminHomePage"]);
+        // $this->router->get("/login", [$this->userController, "loginPage"]);
+        // $this->router->post("/login", [$this->userController, 'handleLogin']);
+        // $this->router->get("/logout", [$this->userController, "logout"]);
+        // $this->router->get("/entry", [$this->userController, "handleEntry"]);
+        // $this->router->post("/api/entry", [$this->candidatApi, "handleCreate"]);
+        // $this->router->get("/api/entry", [$this->candidatApi, "handleGetCandidats"]);
+        // $this->router->put("/api/entry", [$this->candidatApi, "handleEdit"]);
 
         $this->router->handleRequest();
     }
