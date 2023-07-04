@@ -12,6 +12,23 @@ use views\Navbar;
 
 class UserController
 {
+
+    /**
+     * TODO :
+     * - [x] create classe Authorisation
+     * - [] instanciate new object authorisation from Authorization
+     * - [x] create RoleModel classe
+     * - [x] create GroupeModel classe
+     * - [] assign roles to groupes. Using the created authorization
+     * - [] create page manage role
+     * - [] create table role on calling UserController
+     * - [] create page manage groupe
+     * - [] create table groupe on calling UserController
+     * - [] create page manage user
+     * - [] create table user on calling UserController
+     */
+
+
     private $userModel;
     private $templateRenderer;
     private $navBar;
