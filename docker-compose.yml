@@ -33,7 +33,7 @@ services:
       - MYSQL_ROOT_PASSWORD=pass
       - MYSQL_DATABASE=project_data_base
     volumes:
-      - ./mysql-data:/var/lib/mysql
+      - ./mysql-data:/var/opt/mysql-data
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
