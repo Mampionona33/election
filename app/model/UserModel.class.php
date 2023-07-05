@@ -12,7 +12,7 @@ class UserModel
     private $dataManipulator;
     private $tableManipulator;
 
-  
+
     public function __construct()
     {
         $this->tableName = "User";
@@ -61,6 +61,7 @@ class UserModel
 
     public function getUserByEmail($data): array
     {
+        
         $condition = "email= '" . $data["email"] . "' AND password='" . $data["password"] . "'";
         $user = $this->dataManipulator->getData($this->tableName, [], $condition);
         if (count($user) > 0) {

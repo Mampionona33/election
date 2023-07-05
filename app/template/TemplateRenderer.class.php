@@ -121,7 +121,7 @@ class TemplateRenderer
     public function setModalContent($modalContent): void
     {
         $this->modalContent = $modalContent;
-    }
+        }
 
     public function setError($errorTitle, $errorMessage): void
     {

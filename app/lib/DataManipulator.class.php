@@ -54,6 +54,8 @@ class DataManipulator
         // Ajouter la table à la requête
         $query .= " FROM " . $tableName;
 
+        var_dump($query);
+
         // Si une condition est spécifiée, l'ajouter à la requête
         if (!empty($condition)) {
             $query .= " WHERE " . $condition;

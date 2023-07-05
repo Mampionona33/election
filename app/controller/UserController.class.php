@@ -45,6 +45,29 @@ class UserController
     private $roleModel;
     private $userModel;
     private $groupeModel;
+    private $templateRenderer;
+    private $navBar;
+
+    public function setNavBar(Navbar $navBar): void
+    {
+        $this->navBar;
+    }
+
+    public function getNavBar(): Navbar
+    {
+        return $this->navBar;
+    }
+
+
+    public function setTemplateRenderer($templateRenderer): void
+    {
+        $this->templateRenderer = $templateRenderer;
+    }
+
+    public function getTemplateRenderer(): string
+    {
+        return $this->templateRenderer;
+    }
 
     public function setUserModel(UserModel $userModel): void
     {
@@ -101,11 +124,14 @@ class UserController
         $this->setRoleModel(new RoleModel());
         $this->setGroupeModel(new GroupeModel());
         $this->setUserModel(new UserModel());
+        $this->setTemplateRenderer(new TemplateRenderer());
+        $this->navBar = new Navbar();
     }
 
     public function handleHome()
     {
-        echo "test";
+        $this->templateRenderer->setNavbarContent($this->navBar->render());
+        echo $this->templateRenderer->render();
     }
 
 
