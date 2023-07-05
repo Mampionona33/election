@@ -75,6 +75,11 @@ class GroupeModel
         return [];
     }
 
+    public function getAll(): array
+    {
+        return [];
+    }
+
     public function delete($id_groupe): void
     {
     }

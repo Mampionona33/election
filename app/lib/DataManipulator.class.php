@@ -43,6 +43,7 @@ class DataManipulator
     {
         $query = "SELECT";
 
+
         // Si la liste de colonnes est vide, sélectionner toutes les colonnes avec *
         if (empty($columns)) {
             $query .= " *";
@@ -54,14 +55,11 @@ class DataManipulator
         // Ajouter la table à la requête
         $query .= " FROM " . $tableName;
 
-        var_dump($query);
-
         // Si une condition est spécifiée, l'ajouter à la requête
         if (!empty($condition)) {
             $query .= " WHERE " . $condition;
         }
 
-        // var_dump($query);
         $stmt = $this->db->prepare($query);
 
         try {

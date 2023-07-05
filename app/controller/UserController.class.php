@@ -27,17 +27,20 @@ class UserController
      * - [x] create table User on calling UserController
      * - [x] create table Candidat on calling UserController
      * - [x] instanciate new object authorisation from Authorization
+     * - [x] test assign roles to groupes. Using the created object authorization
      * - [] clean class CandidatModel
      * - [] create UserApi for handling request from modals
      * - [] create RoleApi for handling request from modals
      * - [] create GroupeApi for handling request form modals
      * - [] Refonte CandidatApi to match the authorization method
-     * - [] assign roles to groupes. Using the created object authorization
      * - [] create visitor home page
      * - [] create manage role page
      * - [] create manage groupe page
      * - [] create manage user page
      * - [] create login page
+     * - [] Mis fanotanina mahakasika an'le clean code! ts 
+     *      maints mampiasa this fona ve na oe variable temp 
+     *      an'le function ary le variabe 
      */
 
     private $authorization;
@@ -47,6 +50,17 @@ class UserController
     private $groupeModel;
     private $templateRenderer;
     private $navBar;
+    private $authController;
+
+    public function setAuthController(AuthController $authController): void
+    {
+        $this->authController = $authController;
+    }
+
+    public function getController(): AuthController
+    {
+        return $this->authController;
+    }
 
     public function setNavBar(Navbar $navBar): void
     {
@@ -120,18 +134,31 @@ class UserController
 
     public function __construct()
     {
-        $this->setAuthorization(new Authorization());
         $this->setRoleModel(new RoleModel());
         $this->setGroupeModel(new GroupeModel());
         $this->setUserModel(new UserModel());
         $this->setTemplateRenderer(new TemplateRenderer());
         $this->navBar = new Navbar();
+        $this->setAuthorization(new Authorization());
+        $this->setAuthController(new AuthController());
+        // Setup authorization
+        $this->navBar->setAuthorization($this->authorization);
+        $this->authorization->addGroupeRoles(1, "menu_button");
     }
 
     public function handleHome()
     {
+        session_start();
+        if ($this->authController->isUserLogged()) {
+            $this->templateRenderer->setNavbarContent($this->navBar->render());
+            echo $this->templateRenderer->render();
+        }
         $this->templateRenderer->setNavbarContent($this->navBar->render());
         echo $this->templateRenderer->render();
+        if (empty($_SESSION["user"])) {
+            session_destroy();
+        }
+        exit();
     }
 
 

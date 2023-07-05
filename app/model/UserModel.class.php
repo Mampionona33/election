@@ -61,7 +61,6 @@ class UserModel
 
     public function getUserByEmail($data): array
     {
-        
         $condition = "email= '" . $data["email"] . "' AND password='" . $data["password"] . "'";
         $user = $this->dataManipulator->getData($this->tableName, [], $condition);
         if (count($user) > 0) {

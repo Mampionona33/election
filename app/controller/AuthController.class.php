@@ -25,8 +25,8 @@ class AuthController
     public function __construct()
     {
         $this->setLoginPage(new Login());
-        // $this->setUserModel(new UserModel());
-        $this->userModel = new UserModel();
+        $this->setUserModel(new UserModel());
+        // $this->userModel = new UserModel();
     }
 
     public function  setLoggedUser($loggedUser): void
@@ -59,13 +59,25 @@ class AuthController
         if (isset($_POST["email"]) && isset($_POST["password"])) {
             // get user from db
             $this->loggedUser = $this->userModel->getUserByEmail($_POST);
-            // var_dump($this->loggedUser);
-            // if (!empty($this->loggedUser)) {
-            //    echo "test";
-            // } else {
-            //     echo "error";
-            // }
+
+            if (!empty($this->loggedUser)) {
+                // créer un session pour l'utilisateur connecté
+                session_start();
+                $_SESSION["user"] = $this->loggedUser;
+                header("Location: /");
+                exit();
+            } else {
+                echo "error";
+            }
         }
+    }
+
+    public function handleLogout(): void
+    {
+        header("Location: /");
+        session_start();
+        session_destroy();
+        exit();
     }
 
 
