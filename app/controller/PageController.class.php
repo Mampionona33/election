@@ -16,7 +16,18 @@ class PageController
     private $authorization;
     private $loginPage;
     private $adminSideBarItem;
+    private $users;
+    
 
+    public function setUsers(array $users): void
+    {
+        $this->users = $users;
+    }
+
+    public function getUsers(): array
+    {
+        return $this->users;
+    }
 
     public function setLoginPage(Login $loginPage): void
     {
@@ -89,7 +100,10 @@ class PageController
         $this->adminSideBarItem = [
             ['path' => '/admin', 'label' => 'Accueil'],
             ['path' => '/entry', 'label' => 'Gestion des candidats'],
-            ['path' => '/users', 'label' => 'Gestion des utilisateurs'],
+            ['path' => '/groupe', 'label' => 'Gestion des groupes'],
+            ['path' => '/role', 'label' => 'Gestion des roles'],
+            ['path' => '/user', 'label' => 'Gestion des utilisateurs'],
+            ['path' => '/Authorization', 'label' => 'Gestion des authorisations'],
         ];
         $this->authorization->addGroupeRoles(1, "menu_button");
     }
@@ -119,6 +133,7 @@ class PageController
         if (!$this->isUserLogged()) {
             $this->redirectToLoginPage();
         } else {
+
             $this->generateNavbar();
             $this->templateRenderer->setBodyContent($this->electionResult());
             echo $this->templateRenderer->render("Home");
@@ -126,6 +141,17 @@ class PageController
         }
     }
 
+    public function manageUserPage(): void
+    {
+        session_start();
+        if (!$this->isUserLogged()) {
+            $this->redirectToLoginPage();
+        } else {
+
+            $this->generateNavbar();
+            echo $this->templateRenderer->render("Manage users");
+        }
+    }
 
     /**
      * tools for this classe

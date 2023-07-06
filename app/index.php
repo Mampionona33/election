@@ -62,6 +62,7 @@ final class App
         $this->router->get("/admin", [$this->pageController, "adminHomePage"]);
         $this->router->post("/login", [$this->authController, 'handleLogin']);
         $this->router->get("/logout", [$this->authController, 'handleLogout']);
+        $this->router->get("/user", [$this->pageController, "manageUserPage"]);
         // $this->router->get("/login", [$this->userController, "loginPage"]);
         // $this->router->get("/logout", [$this->userController, "logout"]);
         // $this->router->get("/entry", [$this->userController, "handleEntry"]);

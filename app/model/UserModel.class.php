@@ -51,7 +51,7 @@ class UserModel
 
     public function getUsers(): array
     {
-        return [];
+        return $this->dataManipulator->getData($this->tableName);
     }
 
     public function getUser($user_id): array
