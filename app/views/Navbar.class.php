@@ -44,9 +44,7 @@ class Navbar
     private function renderMenuButton()
     {
         // Vérifiez si l'utilisateur a l'autorisation d'afficher le bouton de menu
-        // var_dump($_SESSION["user"][0]["id_groupe"]);
         $userIdGroupe = isset($_SESSION["user"]) && isset($_SESSION["user"][0]["id_groupe"]) ? $_SESSION["user"][0]["id_groupe"] : null;
-        var_dump($userIdGroupe);
         if ($this->authorization->isAuthorized($userIdGroupe, 'menu_button')) {
             return '<button class="btn btn-primary d-flex align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
                     <span class="material-icons">menu</span>

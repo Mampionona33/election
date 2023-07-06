@@ -51,6 +51,7 @@ class UserController
     private $templateRenderer;
     private $navBar;
     private $authController;
+    private $adminSideBarItem;
 
     public function setAuthController(AuthController $authController): void
     {
@@ -141,8 +142,18 @@ class UserController
         $this->navBar = new Navbar();
         $this->setAuthorization(new Authorization());
         $this->setAuthController(new AuthController());
+
         // Setup authorization
         $this->navBar->setAuthorization($this->authorization);
+        $this->adminSideBarItem = [
+            ['path' => '/', 'label' => 'Accueil'],
+            ['path' => '/candidat', 'label' => 'Gestion des candidats'],
+            ['path' => '/users', 'label' => 'Gestion des utilisateurs'],
+            ['path' => '/groupe', 'label' => 'Gestion des groupes'],
+            ['path' => '/role', 'label' => 'Gestion des roles'],
+            ['path' => '/authorization', 'label' => 'Gestion des authorisations'],
+        ];
+        $this->templateRenderer->setSidebarContent($this->adminSideBarItem);
         $this->authorization->addGroupeRoles(1, "menu_button");
     }
 
