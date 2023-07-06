@@ -29,7 +29,7 @@ class AuthController
         // $this->userModel = new UserModel();
     }
 
-    public function  setLoggedUser($loggedUser): void
+    public function setLoggedUser($loggedUser): void
     {
         $this->loggedUser = $loggedUser;
     }
@@ -49,7 +49,7 @@ class AuthController
         return $this->loginPage;
     }
 
-    public function  renderLoginPage()
+    public function renderLoginPage()
     {
         echo $this->loginPage->render();
     }

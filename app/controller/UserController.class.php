@@ -135,48 +135,7 @@ class UserController
 
     public function __construct()
     {
-        $this->setRoleModel(new RoleModel());
-        $this->setGroupeModel(new GroupeModel());
-        $this->setUserModel(new UserModel());
-        $this->setTemplateRenderer(new TemplateRenderer());
-        $this->navBar = new Navbar();
-        $this->setAuthorization(new Authorization());
-        $this->setAuthController(new AuthController());
-
-        // Setup authorization
-        $this->navBar->setAuthorization($this->authorization);
-        $this->adminSideBarItem = [
-            ['path' => '/', 'label' => 'Accueil'],
-            ['path' => '/candidat', 'label' => 'Gestion des candidats'],
-            ['path' => '/users', 'label' => 'Gestion des utilisateurs'],
-            ['path' => '/groupe', 'label' => 'Gestion des groupes'],
-            ['path' => '/role', 'label' => 'Gestion des roles'],
-            ['path' => '/authorization', 'label' => 'Gestion des authorisations'],
-        ];
-        $this->templateRenderer->setSidebarContent($this->adminSideBarItem);
-        $this->authorization->addGroupeRoles(1, "menu_button");
     }
-
-    public function handleHome()
-    {
-        session_start();
-        if ($this->authController->isUserLogged()) {
-            $this->templateRenderer->setNavbarContent($this->navBar->render());
-            echo $this->templateRenderer->render();
-        }
-        $this->templateRenderer->setNavbarContent($this->navBar->render());
-        echo $this->templateRenderer->render();
-        if (empty($_SESSION["user"])) {
-            session_destroy();
-        }
-        exit();
-    }
-
-    public function authorizationPage(): void
-    {
-        echo "authorizationPage";
-    }
-
 
 
     // private $userModel;
@@ -216,11 +175,6 @@ class UserController
     //     $this->firstCandidatName = count($this->firstCandidat) > 0 ? $this->firstCandidat[0]["name"] : null;
     //     $this->candidatMaxName = count($this->candidatMaxPoint) > 0 ? $this->candidatMaxPoint[0]["name"] : null;
 
-    //     $this->adminSideBarItem = [
-    //         ['path' => '/admin', 'label' => 'Accueil'],
-    //         ['path' => '/entry', 'label' => 'Gestion des candidats'],
-    //         ['path' => '/users', 'label' => 'Gestion des utilisateurs'],
-    //     ];
     //     $this->customCard = new CustomCard();
     //     $this->customCard->setIcon("how_to_vote");
     // }

@@ -3,6 +3,7 @@
 
 use Api\CandidatApi;
 use controller\AuthController;
+use controller\PageController;
 use views\Login;
 
 error_reporting(E_ALL);
@@ -18,6 +19,7 @@ final class App
     private $candidatApi;
     private $loginPage;
     private $authController;
+    private $pageController;
 
     function __construct()
     {
@@ -29,6 +31,12 @@ final class App
         $this->setLoginPage(new Login);
         session_save_path(__DIR__ . "/tmp");
         $this->setAuthController(new AuthController);
+        $this->setPageController(new PageController());
+    }
+
+    public function setPageController(PageController $pageController): void
+    {
+        $this->pageController = $pageController;
     }
 
     public function setAuthController(AuthController $authController)
@@ -49,12 +57,11 @@ final class App
          *      $this->userController->handleHome();
          * });
          */
-        $this->router->get("/", [$this->userController, "handleHome"]);
-        $this->router->get("/login", [$this->authController, "renderLoginPage"]);
+        $this->router->get("/", [$this->pageController, "handleHome"]);
+        $this->router->get("/login", [$this->pageController, "renderLoginPage"]);
+        $this->router->get("/admin", [$this->pageController, "adminHomePage"]);
         $this->router->post("/login", [$this->authController, 'handleLogin']);
         $this->router->get("/logout", [$this->authController, 'handleLogout']);
-        $this->router->get("/authorization", [$this->userController, 'authorizationPage']);
-        // $this->router->get("/admin", [$this->userController, "adminHomePage"]);
         // $this->router->get("/login", [$this->userController, "loginPage"]);
         // $this->router->get("/logout", [$this->userController, "logout"]);
         // $this->router->get("/entry", [$this->userController, "handleEntry"]);
