@@ -26,6 +26,8 @@ class CustomSideBar
         $this->items[] = $item;
     }
 
+   
+
     public function render(): string
     {
         $sidebarItems = '';

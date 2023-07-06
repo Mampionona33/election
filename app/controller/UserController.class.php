@@ -172,6 +172,11 @@ class UserController
         exit();
     }
 
+    public function authorizationPage(): void
+    {
+        echo "authorizationPage";
+    }
+
 
 
     // private $userModel;
