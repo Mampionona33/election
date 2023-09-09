@@ -19,7 +19,7 @@ class CandidatModel extends DataManipulator
     {
         parent::__construct();
 
-        $this->tableName = "Candidats";
+        $this->tableName = "Candidat";
         $this->columns = [
             [
                 'name' => 'id_candidat',

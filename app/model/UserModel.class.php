@@ -12,6 +12,7 @@ class UserModel
     private $dataManipulator;
     private $tableManipulator;
 
+
     public function __construct()
     {
         $this->tableName = "User";
@@ -33,10 +34,9 @@ class UserModel
                 'required' => false,
             ],
             [
-                'name' => 'role',
-                'type' => 'ENUM',
-                'values' => ['operator', 'admin'],
-                'required' => false,
+                'name' => 'id_groupe',
+                'type' => 'int',
+                'required' => true,
             ]
         ];
         $this->dataManipulator = new DataManipulator();
@@ -51,7 +51,7 @@ class UserModel
 
     public function getUsers(): array
     {
-        return [];
+        return $this->dataManipulator->getData($this->tableName);
     }
 
     public function getUser($user_id): array

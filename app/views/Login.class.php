@@ -45,7 +45,7 @@ class Login
         HTML;
     }
 
-    public function __invoke(): string
+    public function render(): string
     {
         $this->templateRenderer->setBodyContent($this->loginForm());
         return $this->templateRenderer->render("Login Page");

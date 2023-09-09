@@ -2,11 +2,24 @@
 
 namespace views;
 
+use controller\Authorization;
+
 class Navbar
 {
     private $options;
     private $title;
     private $menuVisible = false;
+    private $authorization;
+
+    public function setAuthorization(Authorization $authorization): void
+    {
+        $this->authorization = $authorization;
+    }
+
+    public function getAuthorization(): Authorization
+    {
+        return $this->authorization;
+    }
 
     public function setTitle(string $title): void
     {
@@ -30,9 +43,13 @@ class Navbar
 
     private function renderMenuButton()
     {
-        return '<button class="btn btn-primary d-flex align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
+        // Vérifiez si l'utilisateur a l'autorisation d'afficher le bouton de menu
+        $userIdGroupe = isset($_SESSION["user"]) && isset($_SESSION["user"][0]["id_groupe"]) ? $_SESSION["user"][0]["id_groupe"] : null;
+        if ($this->authorization->isAuthorized($userIdGroupe, 'menu_button')) {
+            return '<button class="btn btn-primary d-flex align-items-center" type="button" data-bs-toggle="offcanvas" data-bs-target="#staticBackdrop" aria-controls="staticBackdrop">
                     <span class="material-icons">menu</span>
                 </button>';
+        }
     }
 
     public function setMenuVisible(bool $menuVisible): void
@@ -44,7 +61,7 @@ class Navbar
     {
         $logButton = $this->logButton();
         $title = $this->renderTitle();
-        $menuButton = $this->menuVisible ?  $this->renderMenuButton() : null;
+        $menuButton = $this->renderMenuButton();
 
         return <<<HTML
             <div class="container-fluid">
